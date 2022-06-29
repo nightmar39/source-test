@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: source-test-flask
+spec:
+  project: default
+  source:
+    path: .
+    repoURL: https://github.com/nightmar39/flask-k8s-basic
+    targetRevision: HEAD
+  destination:
+    name: managed-test
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - PrunePropagationPolicy=foreground
+      - Replace=false
+      - PruneLast=false
+      - Validate=true
+      - CreateNamespace=false
+      - ApplyOutOfSyncOnly=false
