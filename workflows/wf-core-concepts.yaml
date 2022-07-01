@@ -1,0 +1,69 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTempate
+metadata: 
+  name: wf-core-concepts
+spec: 
+  entrypoint: dag-template
+  templates:
+    #script template
+    - name: taskA
+      script: 
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          print("Task A executed Successfully with script template")
+
+    - name: taskB
+      container:
+        image: docker/whalesay
+        command: [cowsay]
+        args: ["Task B executed successfully with container template"]
+
+    - name: taskC
+      resource:
+        action: create
+        manifest:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Workflow
+          metadata: 
+            name: wf-core-concepts-resource-template
+          spec:
+            entrypoint: main-template
+            templates:
+              - name: main-template
+                container:
+                  image: docker/whalesay
+                  command: [cowsay]
+                  args: ["Task C completed successfully with resource template"]
+
+    - name: taskD
+      suspend:
+        duration: 5
+
+    - name: tripleB
+      steps:
+        - - name: b1
+            template: taskB
+        - - name: b2
+            template: taskB
+        - - name: b3
+            template: taskB
+
+    - name: dag-template
+      dag: 
+        tasks: 
+          - name: task1
+            template: taskA
+          - name: task2 
+            template: tripleB
+            depedencies: [task1]
+          - name: task3 
+            template: taskC
+            depedencies: [task1]
+          - name: task4
+            templates: taskD
+            depedencies: [task2, task3]
+          - name: task5
+            template: taskA
+            depedencies: [task4]
+
