@@ -66,4 +66,3 @@ spec:
           - name: task5
             template: taskA
             depedencies: [task4]
-
