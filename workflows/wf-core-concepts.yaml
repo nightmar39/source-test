@@ -22,7 +22,7 @@ spec:
     - name: taskC
       resource:
         action: create
-        manifest:
+        manifest: |
           apiVersion: argoproj.io/v1alpha1
           kind: Workflow
           metadata: 
