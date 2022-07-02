@@ -38,7 +38,7 @@ spec:
 
     - name: taskD
       suspend:
-        duration: 5
+        duration: "5s"
 
     - name: tripleB
       steps:
