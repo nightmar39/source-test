@@ -61,7 +61,7 @@ spec:
             template: taskC
             depedencies: [task1]
           - name: task4
-            templates: taskD
+            template: taskD
             depedencies: [task2, task3]
           - name: task5
             template: taskA
