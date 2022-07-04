@@ -2,7 +2,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata: 
   name: wf-core-concepts
+  namespace: workflows-demo
 spec: 
+  serviceAccountName: wf-resource-sa
   entrypoint: dag-template
   templates:
     #script template
