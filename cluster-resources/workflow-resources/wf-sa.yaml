@@ -2,4 +2,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: wf-resource-sa
-  namespace: workflows-demo
+  namespace: csdp-june-charizard
