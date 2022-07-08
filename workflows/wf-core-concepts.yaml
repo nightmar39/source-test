@@ -3,6 +3,7 @@ kind: Workflow
 metadata: 
   name: wf-core-concepts
 spec: 
+  serviceAccountName: wf-resource-sa
   entrypoint: dag-template
   templates:
     #script template

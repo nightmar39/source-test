@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: hello-world-inputs
+spec:
+  entrypoint: whalesay
+  arguments:
+    parameters:
+      - name: text
+        value: "Hello from inputs"
+  templates:
+  - name: whalesay
+    container:
+      image: docker/whalesay:latest
+      command: [cowsay]
+      args: ['{{inputs.parameters.text}}']
+    inputs:
+      parameters: 
+        - name: text

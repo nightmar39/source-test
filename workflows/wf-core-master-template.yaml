@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: wf-master-template
+spec: 
+  entrypoint: dag-template
+  templates:
+      - name: dag-template
+        dag:
+          tasks: 
+            - name: hello-world-inputs
+              templateRef:
+                name: hello-worlds-inputs
+                template: whalesay
+                arguments:
+                  parameters:
+                    - name: text
+                      value: "Hello from MasterTemplate"
+            - name: wf-core-concepts
+              templateRef: 
+                name: wf-core-concepts
+                template: dag-template
