@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata: 
+  name: update-deploy-tag
+spec:
+  entrypoint: git-pull
+  arguments:
+    parameters:
+    - name: NEW_IMAGE
+      default: docker.io/nightmar39/basic-flask-docker
+    - name: NEW_TAG
+      default: latest
+    - name: CD_REPO
+      default: https://github.com/nightmar39/flask-k8s-basic.git
+    - name: DEPLOYMENT_FILE
+      default: deployment.yml
+    - name: CONTAINER_NAME
+      default: flask-server-simple
+  templates:
+    - name: git-pull
+      script:
+        image:
+        command: [bash]
+        source: |
+          #!bin/bash 
+          git clone $CD_REPO
+          export ARTIFACT=$NEW_IMAGE:$NEW_TAG
+          yq '(".spec.template.spec.containers[]" | select(".name" == env(CONTAINER_NAME)) | ".image") = env(ARTIFACT)' $DEPLOYMENT_FILE
+          git add $DEPLOYMENT_FILE
+          git commit -m "updating tag to $NEW_IMAGE"
+          git push https://nightmar39:$GIT_TOKEN@github.com/nightmar39/flask-k8s-basic.git csdp
