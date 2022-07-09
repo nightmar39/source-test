@@ -43,11 +43,10 @@ spec:
         source: |
           #!bin/bash 
           git config --global user.email "{{inputs.parameters.COMMITER_EMAIL}}"
-          git clone "{{inputs.parameters.CD_REPO}}" tmp 
+          git clone -b "{{inputs.paraemters.BRANCH}}" "{{inputs.parameters.CD_REPO}}" tmp 
           cd tmp 
           export ARTIFACT="{{inputs.parameters.NEW_IMAGE}}":"{{inputs.parameters.NEW_TAG}}"
           echo $ARTIFACT
-          git branch -M "{{inputs.parameters.BRANCH}}"
           yq '(.spec.template.spec.containers[] | select(.name == "{{inputs.parameters.CONTAINER_NAME}}" | .image) = env(ARTIFACT) ' < deployment.yml 
           git add "{{inputs.parameters.DEPLOYMENT_FILE}}"
           git commit -m 'updating tag to "{{inputs.parameters.NEW_IMAGE}}"'
