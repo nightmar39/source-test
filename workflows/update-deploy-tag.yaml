@@ -3,27 +3,21 @@ kind: WorkflowTemplate
 metadata: 
   name: update-deploy-tag
 spec:
-  entrypoint: git-pull
+  entrypoint: update-tag
   arguments:
     parameters:
     - name: NEW_IMAGE
-      value: docker.io/nightmar39/basic-flask-docker
     - name: NEW_TAG
-      value: test
     - name: CD_REPO
-      value: https://github.com/nightmar39/flask-k8s-basic.git
     - name: GIT_USER
-      value: nightmar39
     - name: DEPLOYMENT_FILE
-      value: deployment.yml
     - name: CONTAINER_NAME
-      value: flask-server-simple
     - name: COMMITER_EMAIL
-      value: anthonyzilla94@gmail.com
     - name: BRANCH
-      value: csdp 
+    - name: REPO_OWNER
+    - name: REPO_NAME
   templates:
-    - name: git-pull
+    - name: update-tag
       inputs:
         parameters: 
           - name: NEW_IMAGE
