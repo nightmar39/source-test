@@ -16,6 +16,7 @@ spec:
       default: deployment.yml
     - name: CONTAINER_NAME
       default: flask-server-simple
+<<<<<<< HEAD
     - name: COMMITER_EMAIL
       default: anthonyzilla94@gmail.com
     - name: BRANCH
@@ -36,3 +37,18 @@ spec:
           git add $DEPLOYMENT_FILE
           git commit -m "updating tag to $NEW_IMAGE"
           git push https://nightmar39:$GIT_TOKEN@github.com/nightmar39/flask-k8s-basic.git $BRANCH
+=======
+  templates:
+    - name: git-pull
+      script:
+        image:
+        command: [bash]
+        source: |
+          #!bin/bash 
+          git clone $CD_REPO
+          export ARTIFACT=$NEW_IMAGE:$NEW_TAG
+          yq '(".spec.template.spec.containers[]" | select(".name" == env(CONTAINER_NAME)) | ".image") = env(ARTIFACT)' $DEPLOYMENT_FILE
+          git add $DEPLOYMENT_FILE
+          git commit -m "updating tag to $NEW_IMAGE"
+          git push https://nightmar39:$GIT_TOKEN@github.com/nightmar39/flask-k8s-basic.git csdp
+>>>>>>> f64d158a80c828d1e40f540dac0f758a50596ffd
