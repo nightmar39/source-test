@@ -47,7 +47,7 @@ spec:
           cd tmp 
           export ARTIFACT="{{inputs.parameters.NEW_IMAGE}}":"{{inputs.parameters.NEW_TAG}}"
           echo $ARTIFACT
-          yq '(.spec.template.spec.containers[] | select(.name == "{{inputs.parameters.CONTAINER_NAME}}") | .image) = env(ARTIFACT) ' < deployment.yml 
+          yq -i '(.spec.template.spec.containers[] | select(.name == "{{inputs.parameters.CONTAINER_NAME}}") | .image) = env(ARTIFACT) ' deployment.yml 
           git add "{{inputs.parameters.DEPLOYMENT_FILE}}"
           git commit -m 'updating tag to "{{inputs.parameters.NEW_IMAGE}}"'
           git push https://nightmar39:$GIT_TOKEN@github.com/nightmar39/flask-k8s-basic.git "{{inputs.parameters.BRANCH}}"
