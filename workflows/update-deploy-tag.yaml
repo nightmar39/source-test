@@ -46,7 +46,7 @@ spec:
           git clone "{{inputs.parameters.CD_REPO}}" tmp 
           cd tmp 
           export ARTIFACT="{{inputs.parameters.NEW_IMAGE}}":"{{inputs.parameters.NEW_TAG}}"
-          yq '(.spec.template.spec.containers[] | select(.name == env(CONTAINER_NAME)) | .image) = env(ARTIFACT) ' < deployment.yml
+          yq '(.spec.template.spec.containers[] | select(.name == "{{inputs.parameters.CONTAINER_NAME}}" | .image) = env(ARTIFACT) ' < deployment.yml
           git branch -M "{{inputs.parameters.BRANCH}}"
           git add "{{inputs.parameters.DEPLOYMENT_FILE}}"
           git commit -m 'updating tag to "{{inputs.parameters.NEW_IMAGE}}"'
