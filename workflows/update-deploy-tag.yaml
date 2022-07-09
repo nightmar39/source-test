@@ -43,7 +43,7 @@ spec:
         source: |
           #!bin/bash 
           git config --global user.email "{{inputs.parameters.COMMITER_EMAIL}}"
-          git clone -b "{{inputs.paraemters.BRANCH}}" "{{inputs.parameters.CD_REPO}}" tmp 
+          git clone -b "{{inputs.parameters.BRANCH}}" "{{inputs.parameters.CD_REPO}}" tmp 
           cd tmp 
           export ARTIFACT="{{inputs.parameters.NEW_IMAGE}}":"{{inputs.parameters.NEW_TAG}}"
           echo $ARTIFACT
