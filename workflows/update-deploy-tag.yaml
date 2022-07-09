@@ -7,48 +7,47 @@ spec:
   arguments:
     parameters:
     - name: NEW_IMAGE
-      default: docker.io/nightmar39/basic-flask-docker
+      value: docker.io/nightmar39/basic-flask-docker
     - name: NEW_TAG
-      default: latest
+      value: latest
     - name: CD_REPO
-      default: https://github.com/nightmar39/flask-k8s-basic.git
+      value: https://github.com/nightmar39/flask-k8s-basic.git
     - name: DEPLOYMENT_FILE
-      default: deployment.yml
+      value: deployment.yml
     - name: CONTAINER_NAME
-      default: flask-server-simple
-<<<<<<< HEAD
+      value: flask-server-simple
     - name: COMMITER_EMAIL
-      default: anthonyzilla94@gmail.com
+      value: anthonyzilla94@gmail.com
     - name: BRANCH
-      default: csdp 
+      value: csdp 
   templates:
     - name: git-pull
+      inputs:
+        parameters: 
+          - name: NEW_IMAGE
+          - name: NEW_TAG
+          - name: CD_REPO
+          - name: DEPLOYMENT_FILE
+          - name: CONTAINER_NAME
+          - name: COMMITER_EMAIL
+          - name: BRANCH
       script:
         image: docker.io/nightmar39/git-yq
         command: [bash]
+        env: 
+          - name: GIT_TOKEN
+            valueFrom: 
+              secretKeyRef:
+                name: github-token
+                key: token
         source: |
           #!bin/bash 
-          git config --global user.email $COMMITER_EMAIL
+          git config --global user.email "{{inputs.parameters.COMMITER_EMAIL}}"
           git clone $CD_REPO tmp 
           cd tmp 
-          export ARTIFACT=$NEW_IMAGE:$NEW_TAG
+          export ARTIFACT="{{inputs.parameters.NEW_IMAGE}}":"{{inputs.parameters.NEW_TAG}}"
           yq '(.spec.template.spec.containers[] | select(.name == env(CONTAINER_NAME)) | .image) = env(ARTIFACT) ' < deployment.yml
-          git branch -M $BRANCH
-          git add $DEPLOYMENT_FILE
-          git commit -m "updating tag to $NEW_IMAGE"
-          git push https://nightmar39:$GIT_TOKEN@github.com/nightmar39/flask-k8s-basic.git $BRANCH
-=======
-  templates:
-    - name: git-pull
-      script:
-        image:
-        command: [bash]
-        source: |
-          #!bin/bash 
-          git clone $CD_REPO
-          export ARTIFACT=$NEW_IMAGE:$NEW_TAG
-          yq '(".spec.template.spec.containers[]" | select(".name" == env(CONTAINER_NAME)) | ".image") = env(ARTIFACT)' $DEPLOYMENT_FILE
-          git add $DEPLOYMENT_FILE
-          git commit -m "updating tag to $NEW_IMAGE"
-          git push https://nightmar39:$GIT_TOKEN@github.com/nightmar39/flask-k8s-basic.git csdp
->>>>>>> f64d158a80c828d1e40f540dac0f758a50596ffd
+          git branch -M "{{inputs.parameters.BRANCH}}"
+          git add "{{inputs.parameters.DEPLOYMENT_FILE}}"
+          git commit -m 'updating tag to "{{inputs.parameters.NEW_IMAGE}}"'
+          git push https://nightmar39:$GIT_TOKEN@github.com/nightmar39/flask-k8s-basic.git "{{inputs.parameters.DEPLOYMENT_FILE}}"
