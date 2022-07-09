@@ -43,7 +43,7 @@ spec:
         source: |
           #!bin/bash 
           git config --global user.email "{{inputs.parameters.COMMITER_EMAIL}}"
-          git clone $CD_REPO tmp 
+          git clone "{{inputs.parameters.CD_REPO}}" tmp 
           cd tmp 
           export ARTIFACT="{{inputs.parameters.NEW_IMAGE}}":"{{inputs.parameters.NEW_TAG}}"
           yq '(.spec.template.spec.containers[] | select(.name == env(CONTAINER_NAME)) | .image) = env(ARTIFACT) ' < deployment.yml
