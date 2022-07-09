@@ -9,9 +9,11 @@ spec:
     - name: NEW_IMAGE
       value: docker.io/nightmar39/basic-flask-docker
     - name: NEW_TAG
-      value: latest
+      value: test
     - name: CD_REPO
       value: https://github.com/nightmar39/flask-k8s-basic.git
+    - name: GIT_USER
+      value: nightmar39
     - name: DEPLOYMENT_FILE
       value: deployment.yml
     - name: CONTAINER_NAME
@@ -31,6 +33,9 @@ spec:
           - name: CONTAINER_NAME
           - name: COMMITER_EMAIL
           - name: BRANCH
+          - name: GIT_USER
+          - name: REPO_OWNER
+          - name: REPO_NAME
       script:
         image: docker.io/nightmar39/git-yq
         command: [bash]
@@ -43,11 +48,11 @@ spec:
         source: |
           #!bin/bash 
           git config --global user.email "{{inputs.parameters.COMMITER_EMAIL}}"
-          git clone -b "{{inputs.parameters.BRANCH}}" "{{inputs.parameters.CD_REPO}}" tmp 
+          git clone -b "{{inputs.parameters.BRANCH}}" https://"{{inputs.parameters.GIT_USER}}":$GIT_TOKEN@github.com/"{{inputs.parameters.REPO_OWNER}}"/"{{inputs.parameters.REPO_NAME}}".git tmp 
           cd tmp 
           export ARTIFACT="{{inputs.parameters.NEW_IMAGE}}":"{{inputs.parameters.NEW_TAG}}"
           echo $ARTIFACT
           yq -i '(.spec.template.spec.containers[] | select(.name == "{{inputs.parameters.CONTAINER_NAME}}") | .image) = env(ARTIFACT) ' deployment.yml 
           git add "{{inputs.parameters.DEPLOYMENT_FILE}}"
           git commit -m 'updating tag to "{{inputs.parameters.NEW_IMAGE}}"'
-          git push https://nightmar39:$GIT_TOKEN@github.com/nightmar39/flask-k8s-basic.git "{{inputs.parameters.BRANCH}}"
+          git push https://"{{inputs.parameters.GIT_USER}}":$GIT_TOKEN@github.com/"{{inputs.parameters.REPO_OWNER}}"/"{{inputs.parameters.REPO_NAME}}".git "{{inputs.parameters.BRANCH}}"
